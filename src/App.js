@@ -19,6 +19,7 @@ const theme = createMuiTheme({
 const App = () => (
   <Provider store={store}>
     <ThemeProvider theme={theme}>
+      <CssBaseline />
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6">Opinion Ate</Typography>
