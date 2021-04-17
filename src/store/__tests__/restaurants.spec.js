@@ -5,16 +5,24 @@ import restaurantReducer from '../restaurants/reducers';
 
 describe('restaurants', () => {
   describe('initially', () => {
-    it('does not have the loading flag set', () => {
+    let store;
+
+    beforeEach(() => {
       const initialState = {};
 
-      const store = createStore(
+      store = createStore(
         restaurantReducer,
         initialState,
         applyMiddleware(thunk),
       );
+    });
 
+    it('does not have the loading flag set', () => {
       expect(store.getState().loading).toEqual(false);
+    });
+
+    it('does not have the error flag set', () => {
+      expect(store.getState().loadError).toEqual(false);
     });
   });
   describe('loadRestaurants action', () => {
@@ -52,6 +60,30 @@ describe('restaurants', () => {
 
       it('clears the loading flag', () => {
         expect(store.getState().loading).toEqual(false);
+      });
+    });
+
+    describe('when loading failes', () => {
+      let store;
+
+      beforeEach(() => {
+        const api = {
+          loadRestaurants: () => Promise.reject(),
+        };
+
+        const initialState = {};
+
+        store = createStore(
+          restaurantReducer,
+          initialState,
+          applyMiddleware(thunk.withExtraArgument(api)),
+        );
+
+        return store.dispatch(loadRestaurants());
+      });
+
+      it('sets an error flag', () => {
+        expect(store.getState().loadError).toEqual(true);
       });
     });
 
