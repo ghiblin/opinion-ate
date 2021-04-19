@@ -22,3 +22,5 @@ const storeRestaurants = records => ({
 });
 
 const recordLoadingError = () => ({type: RECORD_LOADING_ERROR});
+
+export const createRestaurant = () => () => {};
