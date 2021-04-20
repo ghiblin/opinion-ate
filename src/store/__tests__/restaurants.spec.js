@@ -1,6 +1,6 @@
 import {applyMiddleware, createStore} from 'redux';
 import thunk from 'redux-thunk';
-import {loadRestaurants} from '../restaurants/actions';
+import {createRestaurant, loadRestaurants} from '../restaurants/actions';
 import restaurantReducer from '../restaurants/reducers';
 
 describe('restaurants', () => {
@@ -25,6 +25,7 @@ describe('restaurants', () => {
       expect(store.getState().loadError).toEqual(false);
     });
   });
+
   describe('loadRestaurants action', () => {
     describe('when loading succeeds', () => {
       const records = [
@@ -115,6 +116,32 @@ describe('restaurants', () => {
       it('clears the error flag', () => {
         expect(store.getState().loadError).toEqual(false);
       });
+    });
+  });
+
+  describe('createRestaurant action', () => {
+    const newRestaurantName = 'Sushi Place';
+
+    let api;
+    let store;
+
+    beforeEach(() => {
+      api = {
+        createRestaurant: jest.fn().mockName('createRestaurant'),
+      };
+
+      const initialState = {};
+
+      store = createStore(
+        restaurantReducer,
+        initialState,
+        applyMiddleware(thunk.withExtraArgument(api)),
+      );
+    });
+
+    it('saves the restaurant to the server', () => {
+      store.dispatch(createRestaurant(newRestaurantName));
+      expect(api.createRestaurant).toHaveBeenLastCalledWith(newRestaurantName);
     });
   });
 });
